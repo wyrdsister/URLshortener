@@ -18,6 +18,13 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("https://company/com/maven2")
+	}
+	mavenLocal()
+	flatDir {
+		dirs("libs")
+	}
 }
 
 dependencies {
@@ -29,11 +36,14 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 	implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+	// https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+	runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
 }
 

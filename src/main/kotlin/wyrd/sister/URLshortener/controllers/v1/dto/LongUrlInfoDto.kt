@@ -7,6 +7,5 @@ import kotlinx.serialization.Serializable
 data class LongUrlInfoDto(
     val longUrl: String,
     val createdAt: LocalDateTime,
-    val expiredAt: LocalDateTime,
-    val clicksCount: Int
+    val expiredAt: LocalDateTime
 )

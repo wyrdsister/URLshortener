@@ -4,4 +4,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ShortUrlDto (val shortUrl: String, val shortCode : String, val expiredAt: LocalDateTime)
+data class ShortUrlDto(
+    val shortUrl: String,
+    val shortCode: String,
+    val expiredAt: LocalDateTime)
