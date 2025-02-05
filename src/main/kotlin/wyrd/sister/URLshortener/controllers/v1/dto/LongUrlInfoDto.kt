@@ -1,4 +1,4 @@
-package wyrd.sister.URLshortener.controllers.v1.dao
+package wyrd.sister.URLshortener.controllers.v1.dto
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable

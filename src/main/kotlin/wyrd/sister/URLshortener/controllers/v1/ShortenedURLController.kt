@@ -1,5 +1,6 @@
 package wyrd.sister.URLshortener.controllers.v1
 
+import io.swagger.v3.oas.annotations.Operation
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toKotlinInstant
 import kotlinx.datetime.toLocalDateTime
@@ -9,24 +10,24 @@ import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
-import org.springframework.web.servlet.mvc.support.RedirectAttributes
-import org.springframework.web.servlet.view.RedirectView
-import wyrd.sister.URLshortener.controllers.v1.dao.LongURLDto
-import wyrd.sister.URLshortener.controllers.v1.dao.LongUrlInfoDto
-import wyrd.sister.URLshortener.controllers.v1.dao.ShortUrlDto
-import wyrd.sister.URLshortener.controllers.v1.dao.StatsInfoDto
+import wyrd.sister.URLshortener.controllers.v1.dto.LongURLDto
+import wyrd.sister.URLshortener.controllers.v1.dto.LongUrlInfoDto
+import wyrd.sister.URLshortener.controllers.v1.dto.ShortUrlDto
+import wyrd.sister.URLshortener.controllers.v1.dto.StatsInfoDto
 import wyrd.sister.URLshortener.services.ShortenedURLService
 import wyrd.sister.URLshortener.utils.isValidURL
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping
 class ShortenedURLController(
     @Autowired val shortenedURLService: ShortenedURLService
 ) {
     private val basicShortUrl = "https://ka.pro/"
 
 
-    @PostMapping("/shorten")
+    @Operation(summary = "Shorten a URL",
+        description = "Generates a short URL for a given long URL.")
+    @PostMapping("/api/v1/shorten")
     fun storten(@RequestBody body: LongURLDto): ShortUrlDto {
         if (!body.longUrl.isValidURL()) {
             throw ResponseStatusException(
@@ -38,6 +39,7 @@ class ShortenedURLController(
         val newShortenedURL = shortenedURLService.shortenURL(body.longUrl)
         return ShortUrlDto(
             shortUrl = "$basicShortUrl/${newShortenedURL.shortCode}",
+            shortCode = newShortenedURL.shortCode,
             expiredAt = newShortenedURL.expiredAt.toKotlinInstant().toLocalDateTime(TimeZone.UTC)
         )
     }
@@ -56,7 +58,9 @@ class ShortenedURLController(
         return ModelAndView("redirect:$longUrl", model);
     }
 
-    @GetMapping("/url/{shortCode}")
+    @Operation(summary = "Get original URL",
+        description = "Returns the original URL without redirect.")
+    @GetMapping("/api/v1/url/{shortCode}")
     fun getOriginalURL(@PathVariable("shortCode") shortCode: String): LongUrlInfoDto {
         val dbEntity = shortenedURLService.getLongUrl(shortCode)
 
@@ -75,7 +79,9 @@ class ShortenedURLController(
         }
     }
 
-    @GetMapping("/stats/{shortCode}")
+    @Operation(summary = "Get analytics for a shortened URL",
+        description = "Returns click analytics.")
+    @GetMapping("/api/v1/analytics/{shortCode}")
     fun getStats(@PathVariable("shortCode") shortCode: String): StatsInfoDto {
         try {
             val clickCounts = shortenedURLService.getStats(shortCode)
