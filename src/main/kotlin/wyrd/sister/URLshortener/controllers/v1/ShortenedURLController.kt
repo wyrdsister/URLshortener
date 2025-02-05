@@ -2,22 +2,19 @@ package wyrd.sister.URLshortener.controllers.v1
 
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toKotlinInstant
-import kotlinx.datetime.toKotlinLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.client.HttpStatusCodeException
+import org.springframework.ui.ModelMap
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import org.springframework.web.servlet.view.RedirectView
 import wyrd.sister.URLshortener.controllers.v1.dao.LongURLDto
+import wyrd.sister.URLshortener.controllers.v1.dao.LongUrlInfoDto
 import wyrd.sister.URLshortener.controllers.v1.dao.ShortUrlDto
+import wyrd.sister.URLshortener.controllers.v1.dao.StatsInfoDto
 import wyrd.sister.URLshortener.services.ShortenedURLService
 import wyrd.sister.URLshortener.utils.isValidURL
 
@@ -46,17 +43,49 @@ class ShortenedURLController(
     }
 
     @GetMapping("/{shortCode}")
-    fun redirectToOriginalURL(@PathVariable("shortCode") shortCode: String) {
+    fun redirectToOriginalURL(@PathVariable("shortCode") shortCode: String, model: ModelMap) : ModelAndView {
+        val longUrl = shortenedURLService.getLongUrl(shortCode)?.url
+        if (longUrl == null) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "The full URL with such short code=$shortCode isn't found!"
+            )
+        }
 
+        model.addAttribute("attribute", "redirectWithRedirectPrefix")
+        return ModelAndView("redirect:$longUrl", model);
     }
 
     @GetMapping("/url/{shortCode}")
-    fun getOriginalURL(@PathVariable("shortCode") shortCode: String) {
+    fun getOriginalURL(@PathVariable("shortCode") shortCode: String): LongUrlInfoDto {
+        val dbEntity = shortenedURLService.getLongUrl(shortCode)
 
+        if (dbEntity == null) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "The full URL with such short code=$shortCode isn't found!"
+            )
+        } else {
+            return LongUrlInfoDto(
+                dbEntity.url,
+                dbEntity.createdAt.toKotlinInstant().toLocalDateTime(TimeZone.UTC),
+                dbEntity.expiredAt.toKotlinInstant().toLocalDateTime(TimeZone.UTC),
+                dbEntity.clickCount
+            )
+        }
     }
 
     @GetMapping("/stats/{shortCode}")
-    fun getStats(@PathVariable("shortCode") shortCode: String) {
+    fun getStats(@PathVariable("shortCode") shortCode: String): StatsInfoDto {
+        try {
+            val clickCounts = shortenedURLService.getStats(shortCode)
+            return StatsInfoDto(shortCode, clickCounts)
+        } catch (e: Exception) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                e.message
+            )
+        }
 
     }
 
