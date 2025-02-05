@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
+	id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
 }
 
 group = "wyrd.sister"
@@ -26,10 +27,13 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+	implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 kotlin {
