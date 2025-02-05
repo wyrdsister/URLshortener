@@ -1,6 +1,5 @@
 package wyrd.sister.URLshortener.services
 
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -13,11 +12,10 @@ import wyrd.sister.URLshortener.utils.generateString
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
 @Service
-class ShortenedURLService(
+class ShortenedUrlService(
     @Autowired val shortenedURLRepository: ShortenedUrlsRepository,
     @Autowired val shortenedUrlAnalyticsRepository: ShortenedUrlAnalyticsRepository
 ) {

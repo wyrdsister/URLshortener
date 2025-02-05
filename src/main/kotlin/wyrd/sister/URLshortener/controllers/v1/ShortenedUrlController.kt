@@ -1,12 +1,7 @@
 package wyrd.sister.URLshortener.controllers.v1
 
 import io.swagger.v3.oas.annotations.Operation
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toKotlinInstant
-import kotlinx.datetime.toLocalDateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.ui.ModelMap
@@ -17,19 +12,22 @@ import wyrd.sister.URLshortener.controllers.v1.dto.LongUrlDto
 import wyrd.sister.URLshortener.controllers.v1.dto.LongUrlInfoDto
 import wyrd.sister.URLshortener.controllers.v1.dto.ShortUrlDto
 import wyrd.sister.URLshortener.controllers.v1.dto.ShortUrlAnalyticsDto
-import wyrd.sister.URLshortener.services.ShortenedURLService
+import wyrd.sister.URLshortener.services.ShortenedUrlService
 import wyrd.sister.URLshortener.utils.isValidURL
+import kotlin.concurrent.thread
 
 @RestController
 @RequestMapping
-class ShortenedURLController(
-    @Autowired val shortenedURLService: ShortenedURLService
+class ShortenedUrlController(
+    @Autowired val shortenedURLService: ShortenedUrlService
 ) {
     private val basicShortUrl = "https://ka.pro/"
 
 
-    @Operation(summary = "Shorten a URL",
-        description = "Generates a short URL for a given long URL.")
+    @Operation(
+        summary = "Shorten a URL",
+        description = "Generates a short URL for a given long URL."
+    )
     @PostMapping("/api/v1/shorten")
     fun storten(@RequestBody body: LongUrlDto): ShortUrlDto {
         if (!body.longUrl.isValidURL()) {
@@ -43,30 +41,30 @@ class ShortenedURLController(
         return ShortUrlDto(
             shortUrl = "$basicShortUrl/${newShortenedURL.shortCode}",
             shortCode = newShortenedURL.shortCode,
-            expiredAt = newShortenedURL.expiredAt.toKotlinInstant().toLocalDateTime(TimeZone.UTC)
+            expiredAt = newShortenedURL.expiredAt.toKotlinInstant()
         )
     }
 
     @GetMapping("/{shortCode}")
-    fun redirectToOriginalURL(@PathVariable("shortCode") shortCode: String, model: ModelMap) : ModelAndView {
+    fun redirectToOriginalURL(@PathVariable("shortCode") shortCode: String, model: ModelMap): ModelAndView {
         val longUrl = shortenedURLService.getLongUrl(shortCode)?.url
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "The full URL with such short code=$shortCode isn't found!"
             )
 
-        runBlocking{
-            val job = launch(Dispatchers.Default){
-                shortenedURLService.updateAnalytics(shortCode)
-            }
+        thread(start = true) {
+            shortenedURLService.updateAnalytics(shortCode)
         }
 
         model.addAttribute("attribute", "redirectWithRedirectPrefix")
         return ModelAndView("redirect:$longUrl", model);
     }
 
-    @Operation(summary = "Get original URL",
-        description = "Returns the original URL without redirect.")
+    @Operation(
+        summary = "Get original URL",
+        description = "Returns the original URL without redirect."
+    )
     @GetMapping("/api/v1/url/{shortCode}")
     fun getOriginalURL(@PathVariable("shortCode") shortCode: String): LongUrlInfoDto {
         val dbEntity = shortenedURLService.getLongUrl(shortCode)
@@ -79,14 +77,16 @@ class ShortenedURLController(
         } else {
             return LongUrlInfoDto(
                 dbEntity.url,
-                dbEntity.createdAt.toKotlinInstant().toLocalDateTime(TimeZone.UTC),
-                dbEntity.expiredAt.toKotlinInstant().toLocalDateTime(TimeZone.UTC)
+                dbEntity.createdAt.toKotlinInstant(),
+                dbEntity.expiredAt.toKotlinInstant()
             )
         }
     }
 
-    @Operation(summary = "Get analytics for a shortened URL",
-        description = "Returns click analytics.")
+    @Operation(
+        summary = "Get analytics for a shortened URL",
+        description = "Returns click analytics."
+    )
     @GetMapping("/api/v1/analytics/{shortCode}")
     fun getAnalytics(@PathVariable("shortCode") shortCode: String): ShortUrlAnalyticsDto {
         try {
@@ -98,7 +98,6 @@ class ShortenedURLController(
                 e.message
             )
         }
-
     }
 
 }
