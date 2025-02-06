@@ -18,8 +18,8 @@ This is a Spring Boot-based URL Shortener service that allows users to generate 
 
 1. Clone the repository
 ```
-git clone https://github.com/wyrdsister/url-shortener.git
-cd url-shortener
+git clone https://github.com/wyrdsister/URLshortener.git
+cd URLshortener
 ```
 
 2. Build the project
