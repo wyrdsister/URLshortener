@@ -4,6 +4,16 @@
 
 This is a Spring Boot-based URL Shortener service that allows users to generate shortened URLs, retrieve the original URLs, and track analytics for shortened links.
 
+#### Prerequisites
+
+- Java 21 (Liberica JDK recommended)
+
+- Gradle
+
+- Docker & Docker Compose
+
+- PostgreSQL 17
+
 ### Setup and Installation
 
 1. Clone the repository
