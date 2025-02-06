@@ -21,8 +21,7 @@ import kotlin.concurrent.thread
 class ShortenedUrlController(
     @Autowired val shortenedURLService: ShortenedUrlService
 ) {
-    private val basicShortUrl = "https://ka.pro/"
-
+    private val basicShortUrl = "http://localhost:8080"
 
     @Operation(
         summary = "Shorten a URL",
