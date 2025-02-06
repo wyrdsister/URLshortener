@@ -58,10 +58,3 @@ allOpen {
 	annotation("jakarta.persistence.MappedSuperclass")
 	annotation("jakarta.persistence.Embeddable")
 }
-
-tasks.withType<Test> {
-	useJUnitPlatform()
-	javaLauncher = javaToolchains.launcherFor {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
