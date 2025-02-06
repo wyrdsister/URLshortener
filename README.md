@@ -25,7 +25,7 @@ cd url-shortener
 
 1. Shorten a URL
 
-Endpoint: POST /api/v1/shorten
+Endpoint: `POST /api/v1/shorten`
 
 Request Body:
 ```
@@ -46,7 +46,7 @@ Response:
 
 2. Redirect to Original URL
 
-Endpoint: GET /{shortCode}
+Endpoint: `GET /{shortCode}`
 
 Example:
 ```curl -L http://localhost:8080/xyz123```
@@ -55,7 +55,7 @@ Redirects the user to the original URL.
 
 3. Get Original URL Without Redirect
 
-Endpoint: GET /api/v1/url/{shortCode}
+Endpoint: `GET /api/v1/url/{shortCode}`
 
 Response:
 ```
@@ -68,7 +68,7 @@ Response:
 
 4. Get Click Analytics
 
-Endpoint: GET /api/v1/analytics/{shortCode}
+Endpoint: `GET /api/v1/analytics/{shortCode}`
 
 Response:
 ```
