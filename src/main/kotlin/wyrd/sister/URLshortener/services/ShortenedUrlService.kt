@@ -21,11 +21,12 @@ class ShortenedUrlService(
 ) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass.name)
+    //TODO add max and min short code length in application.properties
     private val length = 5
-
 
     fun shortenURL(url: String): ShortenedUrls {
         val shortCode = getUniqueShortCode()
+        //TODO add expired_duration in application.properties
         val expiredAt = LocalDateTime.now().plusDays(1)
 
         val shortenURL = ShortenedUrls(
