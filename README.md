@@ -8,7 +8,7 @@ This is a Spring Boot-based URL Shortener service that allows users to generate 
 
 1. Clone the repository
 ```
-git clone https://github.com/your-repo/url-shortener.git
+git clone https://github.com/wyrdsister/url-shortener.git
 cd url-shortener
 ```
 
