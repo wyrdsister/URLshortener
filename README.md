@@ -10,7 +10,7 @@ This is a Spring Boot-based URL Shortener service that allows users to generate 
 
 - Gradle
 
-- Docker & Docker Compose
+- Docker
 
 - PostgreSQL 17
 
@@ -23,13 +23,23 @@ cd url-shortener
 ```
 
 2. Build the project
-```./gradlew clean build```
+```
+./gradlew clean build
+```
 
-3. Run with Docker
-```docker-compose up --build```
+4. Run with Docker
+```
+docker-compose up --build
+```
 
-4. Open Swagger UI in your browser
-```http://localhost:8080/swagger-ui/index.html#```
+6. Open Swagger UI of app1 in your browser
+```
+http://localhost:8080/swagger-ui/index.html#
+```
+or Swagger UI of app2 in your browser
+```
+http://localhost:8888/swagger-ui/index.html#
+```
 
 ### REST API Endpoints
 
@@ -40,8 +50,7 @@ Endpoint: `POST /api/v1/shorten`
 Request Body:
 ```
 {
-  "longUrl": "https://example.com/some-long-url",
-  "customAlias": "optionalAlias"
+  "longUrl": "https://example.com/some-long-url"
 }
 ```
 
