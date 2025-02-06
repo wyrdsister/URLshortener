@@ -24,8 +24,8 @@ class ShortenedUrlService(
     private val length = 5
 
 
-    fun shortenURL(url: String, customAlias: String?): ShortenedUrls {
-        val shortCode = getUniqueShortCode(customAlias)
+    fun shortenURL(url: String): ShortenedUrls {
+        val shortCode = getUniqueShortCode()
         val expiredAt = LocalDateTime.now().plusDays(1)
 
         val shortenURL = ShortenedUrls(
@@ -61,8 +61,8 @@ class ShortenedUrlService(
             ?: throw NullPointerException("The analytics for short code=$shortCode isn't found!")
     }
 
-    private fun getUniqueShortCode(customAlias: String?): String {
-        var shortCode = if (customAlias.isNullOrEmpty()) generateString(length) else customAlias
+    private fun getUniqueShortCode(): String {
+        var shortCode = generateString(length)
         while (shortenedURLRepository.findById(shortCode).getOrNull() != null) {
             shortCode = generateString(length + 1)
         }

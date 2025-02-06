@@ -1,7 +1,7 @@
 package wyrd.sister.URLshortener.controllers.v1
 
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -12,25 +12,33 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import wyrd.sister.URLshortener.entities.ShortenedUrls
+import wyrd.sister.URLshortener.repositories.ShortenedUrlAnalyticsRepository
+import wyrd.sister.URLshortener.repositories.ShortenedUrlsRepository
 import wyrd.sister.URLshortener.services.ShortenedUrlService
 import java.time.Instant
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class ShortenedUrlControllerTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @MockitoBean
     private lateinit var shortenedUrlService: ShortenedUrlService
 
+    @MockitoBean
+    private lateinit var shortenedUrlsRepository: ShortenedUrlsRepository
+
+    @MockitoBean
+    private lateinit var shortenedUrlAnalyticsRepository: ShortenedUrlAnalyticsRepository
+
     @Test
     fun testGenerateShorterUrlSuccess() {
         val longUrl = "https://example.com/long_url/long_url"
         val shortCode = "test"
-        val json = "{\"longUrl\": \"$longUrl\", \"customAlias\" : \"$shortCode\"}"
-        `when`(shortenedUrlService.shortenURL(longUrl, shortCode)).thenReturn(
+        val json = "{\"longUrl\": \"$longUrl\"}"
+        `when`(shortenedUrlService.shortenURL(longUrl)).thenReturn(
             ShortenedUrls(
                 shortCode,
                 longUrl,
@@ -109,10 +117,7 @@ class ShortenedUrlControllerTest {
             )
         )
 
-
-        val result = mockMvc.perform(
-            get("/api/v1/url/$shortCode")
-        )
+        val result = mockMvc.perform(get("/api/v1/url/$shortCode"))
 
         result.andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -124,9 +129,7 @@ class ShortenedUrlControllerTest {
         val shortCode = "test404"
         `when`(shortenedUrlService.getLongUrl(shortCode)).thenReturn(null)
 
-        val result = mockMvc.perform(
-            get("/api/v1/url/$shortCode")
-        )
+        val result = mockMvc.perform(get("/api/v1/url/$shortCode"))
 
         result.andExpect(status().isNotFound())
     }

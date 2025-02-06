@@ -36,7 +36,7 @@ class ShortenedUrlController(
             )
         }
 
-        val newShortenedURL = shortenedURLService.shortenURL(body.longUrl, body.customAlias)
+        val newShortenedURL = shortenedURLService.shortenURL(body.longUrl)
         return ShortUrlDto(
             shortUrl = "$basicShortUrl/${newShortenedURL.shortCode}",
             shortCode = newShortenedURL.shortCode,
