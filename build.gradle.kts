@@ -61,4 +61,7 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
